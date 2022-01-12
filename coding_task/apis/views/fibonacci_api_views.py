@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from coding_task.apis.serializers import NInputSerializer
+from coding_task.apis.serializers import InputSerializer
 
 
 class FibonacciSequenceV1APIView(APIView):
@@ -43,7 +43,7 @@ class FibonacciSequenceV1APIView(APIView):
     )
     def get(self, request, *args, **kwargs):
         n = self.kwargs.get("n")
-        serializer = NInputSerializer(data={"n": n})
+        serializer = InputSerializer(data={"n": n})
         serializer.is_valid(raise_exception=True)
 
         try:
