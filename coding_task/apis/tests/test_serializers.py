@@ -26,10 +26,10 @@ class TestNInputSerializer:
         assert serializer.validated_data["n"] == n_random_input_number
 
     def test__ninputserializer__with_invalid_n__should_raise_validation_error(
-        self,
+        self, dummy_string
     ) -> None:
         # Arrange
-        serializer = NInputSerializer(data={"n": "dummy string"})
+        serializer = NInputSerializer(data={"n": dummy_string})
 
         # Act
         with pytest.raises(exceptions.ValidationError) as err_info:
