@@ -13,8 +13,13 @@ def api_client():
 
 
 @pytest.fixture
+def m_random_input_number() -> int:
+    return random.randint(0, 3)
+
+
+@pytest.fixture
 def n_random_input_number() -> int:
-    return random.randint(0, 10_000)
+    return random.randint(0, 3)
 
 
 @pytest.fixture
