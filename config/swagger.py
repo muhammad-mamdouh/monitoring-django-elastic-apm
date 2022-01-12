@@ -5,9 +5,9 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Coding Task API",
+        title="Coding Task Rest APIs",
         default_version="v1",
-        description="Programming Task API",
+        description="Programming Task Rest APIs",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="mahammad.mamdouh@gmail.com"),
         license=openapi.License(name="MIT License"),
