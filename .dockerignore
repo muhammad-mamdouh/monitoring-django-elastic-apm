@@ -1,0 +1,6 @@
+.editorconfig
+.gitattributes
+.gitignore
+.idea
+.pre-commit-config.yaml
+venv
