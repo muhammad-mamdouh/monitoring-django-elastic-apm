@@ -55,6 +55,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "drf_yasg",
+    "elasticapm.contrib.django",
 ]
 
 LOCAL_APPS = [
@@ -85,6 +86,8 @@ AUTH_PASSWORD_VALIDATORS = [
 MIDDLEWARE = [
     # https://github.com/Rhumbix/django-request-logging
     "request_logging.middleware.LoggingMiddleware",
+    # https://github.com/elastic/apm-agent-python
+    "elasticapm.contrib.django.middleware.TracingMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -146,5 +149,18 @@ LOGGING = {
             "propagate": False,
         },
     },
+    # Log errors from the Elastic APM module to the console (recommended)
+    "elasticapm.errors": {
+        "level": "ERROR",
+        "handlers": ["console"],
+        "propagate": False,
+    },
     "root": {"level": "INFO", "handlers": ["console"]},
+}
+
+# ELASTIC APM
+# ------------------------------------------------------------------------------
+ELASTIC_APM = {
+    "SERVICE_NAME": "${ELASTIC_APM_SERVICE_NAME}",
+    "DEBUG": True,
 }
