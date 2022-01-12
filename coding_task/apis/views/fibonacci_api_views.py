@@ -7,8 +7,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from coding_task.apis.serializers import InputSerializer
+from coding_task.apis.utils import endpoint_disabled_response
 
 LOGGER = logging.getLogger(__name__)
+SWAGGER_DEF_N_INPUT_PARAM = openapi.Parameter(
+    "n",
+    openapi.IN_PATH,
+    description="Number for which the fibonacci sequence will be calculated.",
+    type=openapi.TYPE_INTEGER,
+)
 
 
 class FibonacciSequenceV1APIView(APIView):
@@ -20,25 +27,17 @@ class FibonacciSequenceV1APIView(APIView):
     :return int fibonacci_sequence: nth term of fibonacci sequence regarding the passed number.
     """
 
-    # Swagger configs
-    n_input_param = openapi.Parameter(
-        "n",
-        openapi.IN_PATH,
-        description="Number for which the fibonacci sequence will be calculated.",
-        type=openapi.TYPE_INTEGER,
-    )
-
     def fibonacci_sequence(self, n: int) -> int:
         a, b = 0, 1
 
-        for i in range(n):
+        for _ in range(n):
             a, b = b, a + b
 
         return a
 
     @swagger_auto_schema(
         operation_summary="Fibonacci Sequence V1 API Endpoint",
-        manual_parameters=[n_input_param],
+        manual_parameters=[SWAGGER_DEF_N_INPUT_PARAM],
         responses={
             status.HTTP_200_OK: "fibonacci_sequence: result",
             status.HTTP_400_BAD_REQUEST: "n: A valid integer is required.",
@@ -75,13 +74,10 @@ class FibonacciSequenceV2APIView(APIView):
     @swagger_auto_schema(
         deprecated=True,
         operation_summary="Fibonacci Sequence V2 API Endpoint [DISABLED]",
+        manual_parameters=[SWAGGER_DEF_N_INPUT_PARAM],
         responses={
             status.HTTP_503_SERVICE_UNAVAILABLE: "notice: Version 2 is still under development 💻 please use version 1."
         },
     )
     def get(self, request, *args, **kwargs):
-
-        return Response(
-            {"notice": "Version 2 is still under development 💻 please use version 1."},
-            status=status.HTTP_503_SERVICE_UNAVAILABLE,
-        )
+        return endpoint_disabled_response()

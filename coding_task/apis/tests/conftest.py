@@ -53,3 +53,16 @@ def make_ackermann_function_api_call(api_client: APIClient) -> Callable:
         return response, json_response
 
     return _make_ackermann_function_api_call
+
+
+@pytest.fixture
+def make_factorial_api_call(api_client: APIClient):
+    def _make_factorial_api_call(version_number: int, n: Union[int, str]) -> tuple:
+        factorial_api_url = reverse(
+            f"apis:factorial-v{version_number}", kwargs={"n": n}
+        )
+        response = api_client.get(factorial_api_url)
+        json_response = response.json()
+        return response, json_response
+
+    return _make_factorial_api_call
