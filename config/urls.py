@@ -1,4 +1,5 @@
-from django.urls import include, path
+from .swagger import swagger_urlpatterns
 
-urlpatterns = [
-]
+urlpatterns = []
+
+urlpatterns += swagger_urlpatterns
