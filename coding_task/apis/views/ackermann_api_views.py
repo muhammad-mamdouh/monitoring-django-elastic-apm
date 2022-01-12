@@ -11,6 +11,18 @@ from rest_framework.views import APIView
 from coding_task.apis.serializers import InputSerializer
 
 LOGGER = logging.getLogger(__name__)
+SWAGGER_DEF_M_INPUT_PARAM = openapi.Parameter(
+    "m",
+    openapi.IN_PATH,
+    description="First argument given to the Ackermann Function to be calculated.",
+    type=openapi.TYPE_INTEGER,
+)
+SWAGGER_DEF_N_INPUT_PARAM = openapi.Parameter(
+    "n",
+    openapi.IN_PATH,
+    description="Second argument given to the Ackermann Function to be calculated.",
+    type=openapi.TYPE_INTEGER,
+)
 
 
 class AckermannFunctionV1APIView(APIView):
@@ -22,20 +34,6 @@ class AckermannFunctionV1APIView(APIView):
     :param int n: second param to calculate the ackermann function.
     :return int ackermann: the result of calculating the ackermann function for m and n.
     """
-
-    # Swagger configs
-    m_input_param = openapi.Parameter(
-        "m",
-        openapi.IN_PATH,
-        description="First argument given to the Ackermann Function to be calculated.",
-        type=openapi.TYPE_INTEGER,
-    )
-    n_input_param = openapi.Parameter(
-        "n",
-        openapi.IN_PATH,
-        description="Second argument given to the Ackermann Function to be calculated.",
-        type=openapi.TYPE_INTEGER,
-    )
 
     @lru_cache(maxsize=None)
     def calculate_ackermann(self, m, n):
@@ -50,7 +48,7 @@ class AckermannFunctionV1APIView(APIView):
 
     @swagger_auto_schema(
         operation_summary="Ackermann Function V1 API Endpoint",
-        manual_parameters=[m_input_param, n_input_param],
+        manual_parameters=[SWAGGER_DEF_M_INPUT_PARAM, SWAGGER_DEF_N_INPUT_PARAM],
         responses={
             status.HTTP_200_OK: "ackermann: result",
             status.HTTP_400_BAD_REQUEST: "m|n: A valid integer is required.",
@@ -59,7 +57,7 @@ class AckermannFunctionV1APIView(APIView):
     )
     def get(self, request, *args, **kwargs):
         # Increase the recursion limit
-        sys.setrecursionlimit(3_000_0)
+        sys.setrecursionlimit(30_000)
 
         # Receive and validate m and n input values.
         m = self.kwargs.get("m")
@@ -95,6 +93,7 @@ class AckermannFunctionV2APIView(APIView):
     @swagger_auto_schema(
         deprecated=True,
         operation_summary="Ackermann Function V2 API Endpoint [DISABLED]",
+        manual_parameters=[SWAGGER_DEF_M_INPUT_PARAM, SWAGGER_DEF_N_INPUT_PARAM],
         responses={
             status.HTTP_503_SERVICE_UNAVAILABLE: "notice: Version 2 is still under development 💻 please use version 1."
         },
