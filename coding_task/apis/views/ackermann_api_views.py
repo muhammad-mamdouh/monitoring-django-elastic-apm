@@ -1,3 +1,4 @@
+import logging
 import sys
 from functools import lru_cache
 
@@ -8,6 +9,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from coding_task.apis.serializers import InputSerializer
+
+LOGGER = logging.getLogger(__name__)
 
 
 class AckermannFunctionV1APIView(APIView):
@@ -68,7 +71,7 @@ class AckermannFunctionV1APIView(APIView):
                 serializer.validated_data["m"], serializer.validated_data["n"]
             )
         except RecursionError as e:
-            # TODO: log the error
+            LOGGER.error(f"{self.__class__.__name__} | exception: {e.args}")
             return Response(
                 {"error": "Sorry, we're facing internal errors 🤯 please try again!"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
