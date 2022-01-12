@@ -1,6 +1,7 @@
 import sys
 from functools import lru_cache
 
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -18,6 +19,20 @@ class AckermannFunctionV1APIView(APIView):
     :return int ackermann: the result of calculating the ackermann function for m and n.
     """
 
+    # Swagger configs
+    m_input_param = openapi.Parameter(
+        "m",
+        openapi.IN_PATH,
+        description="First argument given to the Ackermann Function to be calculated.",
+        type=openapi.TYPE_INTEGER,
+    )
+    n_input_param = openapi.Parameter(
+        "n",
+        openapi.IN_PATH,
+        description="Second argument given to the Ackermann Function to be calculated.",
+        type=openapi.TYPE_INTEGER,
+    )
+
     @lru_cache(maxsize=None)
     def calculate_ackermann(self, m, n):
         if m == 0:
@@ -29,6 +44,15 @@ class AckermannFunctionV1APIView(APIView):
         else:
             return self.calculate_ackermann(m - 1, self.calculate_ackermann(m, n - 1))
 
+    @swagger_auto_schema(
+        operation_summary="Ackermann Function V1 API Endpoint",
+        manual_parameters=[m_input_param, n_input_param],
+        responses={
+            status.HTTP_200_OK: "ackermann: result",
+            status.HTTP_400_BAD_REQUEST: "m|n: A valid integer is required.",
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "error: Sorry, we're facing internal errors 🤯 please try again!",
+        },
+    )
     def get(self, request, *args, **kwargs):
         # Increase the recursion limit
         sys.setrecursionlimit(3_000_0)
