@@ -49,4 +49,4 @@ fibonacci_urlpatterns = [
     ),
 ]
 
-urlpatterns = fibonacci_urlpatterns + ackermann_urlpatterns
+urlpatterns = ackermann_urlpatterns + factorial_urlpatterns + fibonacci_urlpatterns
