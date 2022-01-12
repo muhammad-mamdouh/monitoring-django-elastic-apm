@@ -91,6 +91,7 @@ services:
         hard: -1
     ports:
       - "9200:9200"
+    restart: always
     healthcheck:
       test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -vq '\"status\":\"red\"'"]
       retries: 10
