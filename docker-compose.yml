@@ -3,6 +3,10 @@ version: '3'
 volumes:
   local_postgres_data: {}
   local_postgres_data_backups: {}
+  esdata: {}
+
+networks:
+  task-network:
 
 services:
   django:
@@ -13,14 +17,18 @@ services:
     container_name: django
     depends_on:
       - postgres
+      - apm-server
     volumes:
       - .:/app:z
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
+      - ./.envs/.local/.elastic
     ports:
       - "8000:8000"
     command: /start
+    networks:
+      - task-network
 
   postgres:
     image: postgres:13.2
@@ -30,3 +38,82 @@ services:
       - local_postgres_data_backups:/backups:z
     env_file:
       - ./.envs/.local/.postgres
+    networks:
+      - task-network
+
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:${ELK_STACK_VERSION:-7.9.0}
+    container_name: apm-server
+    ports:
+      - "8200:8200"
+    command: >
+      apm-server -e
+        -E apm-server.host=apm-server:8200
+        -E apm-server.read_timeout=1m
+        -E apm-server.shutdown_timeout=2m
+        -E apm-server.write_timeout=1m
+        -E apm-server.rum.enabled=true
+        -E setup.kibana.host=kibana:5601
+        -E setup.template.settings.index.number_of_replicas=0
+        -E xpack.monitoring.elasticsearch=true
+        -E output.elasticsearch.enabled=true
+        -E output.elasticsearch.hosts=elasticsearch:9200
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETGID
+      - SETUID
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD", "curl", "--write-out", "'HTTP %{http_code}'", "--silent", "--output", "/dev/null", "http://apm-server:8200/"]
+      retries: 10
+      interval: 10s
+    networks:
+      - task-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_STACK_VERSION:-7.9.0}
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - network.host=0.0.0.0
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "path.data=/usr/share/elasticsearch/data/${ELK_STACK_VERSION:-7.9.0}"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -vq '\"status\":\"red\"'"]
+      retries: 10
+      interval: 20s
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - task-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELK_STACK_VERSION:-7.9.0}
+    hostname: kibana
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    healthcheck:
+      test: ["CMD", "curl", "--write-out", "'HTTP %{http_code}'", "--silent", "--output", "/dev/null", "http://kibana:5601/"]
+      retries: 10
+      interval: 10s
+    depends_on:
+      - elasticsearch
+    networks:
+      - task-network

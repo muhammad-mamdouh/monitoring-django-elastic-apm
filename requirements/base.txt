@@ -9,3 +9,7 @@ django-environ==0.4.5  # https://github.com/joke2k/django-environ
 # Django REST Framework
 djangorestframework==3.12.4  # https://github.com/encode/django-rest-framework
 drf-yasg==1.20.0  # https://github.com/axnsan12/drf-yasg
+
+# Monitoring
+# ------------------------------------------------------------------------------
+elastic-apm==6.3.2  # https://github.com/elastic/apm-agent-python
