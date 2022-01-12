@@ -30,6 +30,10 @@ class FactorialV1APIView(APIView):
     """
 
     def stirling_approximation_factorial(self, n):
+        # 0 is a special case because it causes decimal to crash when trying to make power of 0.
+        if n == 0:
+            return 1
+
         N = Decimal(n)
         return (Decimal(2 * math.pi) * N).sqrt() * (N / Decimal(math.e)) ** N
 
