@@ -2,6 +2,7 @@ from django.urls import path
 
 from coding_task.apis.views import (
     AckermannFunctionV1APIView,
+    AckermannFunctionV2APIView,
     FibonacciSequenceV1APIView,
     FibonacciSequenceV2APIView,
 )
@@ -25,6 +26,11 @@ ackermann_urlpatterns = [
         "ackermann-function/v1/<str:m>/<str:n>/",
         AckermannFunctionV1APIView.as_view(),
         name="ackermann-function-v1",
+    ),
+    path(
+        "ackermann-function/v2/<str:m>/<str:n>/",
+        AckermannFunctionV2APIView.as_view(),
+        name="ackermann-function-v2",
     ),
 ]
 

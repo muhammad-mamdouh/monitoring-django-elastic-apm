@@ -1,6 +1,7 @@
 import sys
 from functools import lru_cache
 
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -50,3 +51,28 @@ class AckermannFunctionV1APIView(APIView):
             )
 
         return Response({"ackermann": result}, status=status.HTTP_200_OK)
+
+
+class AckermannFunctionV2APIView(APIView):
+    """
+    API endpoint to calculate the ackermann function given m and n.
+    Version 2.
+    Under development, please use version 1.
+    :param int m: first param to calculate the ackermann function.
+    :param int n: second param to calculate the ackermann function.
+    :return int ackermann: the result of calculating the ackermann function for m and n.
+    """
+
+    @swagger_auto_schema(
+        deprecated=True,
+        operation_summary="Ackermann Function V2 API Endpoint [DISABLED]",
+        responses={
+            status.HTTP_503_SERVICE_UNAVAILABLE: "notice: Version 2 is still under development 💻 please use version 1."
+        },
+    )
+    def get(self, request, *args, **kwargs):
+
+        return Response(
+            {"notice": "Version 2 is still under development 💻 please use version 1."},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
