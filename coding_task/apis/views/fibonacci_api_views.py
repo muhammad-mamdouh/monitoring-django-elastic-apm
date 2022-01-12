@@ -1,10 +1,14 @@
+import logging
+
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from coding_task.apis.serializers import NInputSerializer
+from coding_task.apis.serializers import InputSerializer
+
+LOGGER = logging.getLogger(__name__)
 
 
 class FibonacciSequenceV1APIView(APIView):
@@ -43,13 +47,13 @@ class FibonacciSequenceV1APIView(APIView):
     )
     def get(self, request, *args, **kwargs):
         n = self.kwargs.get("n")
-        serializer = NInputSerializer(data={"n": n})
+        serializer = InputSerializer(data={"n": n})
         serializer.is_valid(raise_exception=True)
 
         try:
             result = self.fibonacci_sequence(serializer.validated_data["n"])
         except Exception as e:
-            # TODO: log the error
+            LOGGER.error(f"{self.__class__.__name__} | exception: {e.args}")
             return Response(
                 {"error": "Sorry, we're facing internal errors 🤯 please try again!"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

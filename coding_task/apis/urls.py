@@ -1,12 +1,14 @@
 from django.urls import path
 
 from coding_task.apis.views import (
+    AckermannFunctionV1APIView,
+    AckermannFunctionV2APIView,
     FibonacciSequenceV1APIView,
     FibonacciSequenceV2APIView,
 )
 
 app_name = "apis"
-urlpatterns = [
+fibonacci_urlpatterns = [
     path(
         "fibonacci-sequence/v1/<str:n>/",
         FibonacciSequenceV1APIView.as_view(),
@@ -18,3 +20,18 @@ urlpatterns = [
         name="fibonacci-sequence-v2",
     ),
 ]
+
+ackermann_urlpatterns = [
+    path(
+        "ackermann-function/v1/<str:m>/<str:n>/",
+        AckermannFunctionV1APIView.as_view(),
+        name="ackermann-function-v1",
+    ),
+    path(
+        "ackermann-function/v2/<str:m>/<str:n>/",
+        AckermannFunctionV2APIView.as_view(),
+        name="ackermann-function-v2",
+    ),
+]
+
+urlpatterns = fibonacci_urlpatterns + ackermann_urlpatterns
