@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from coding_task.apis.serializers import InputSerializer
+from coding_task.apis.utils import endpoint_disabled_response
 
 LOGGER = logging.getLogger(__name__)
 SWAGGER_DEF_M_INPUT_PARAM = openapi.Parameter(
@@ -99,8 +100,4 @@ class AckermannFunctionV2APIView(APIView):
         },
     )
     def get(self, request, *args, **kwargs):
-
-        return Response(
-            {"notice": "Version 2 is still under development 💻 please use version 1."},
-            status=status.HTTP_503_SERVICE_UNAVAILABLE,
-        )
+        return endpoint_disabled_response()
