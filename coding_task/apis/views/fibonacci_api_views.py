@@ -31,7 +31,7 @@ class FibonacciSequenceV1APIView(APIView):
     def fibonacci_sequence(self, n: int) -> int:
         a, b = 0, 1
 
-        for i in range(n):
+        for _ in range(n):
             a, b = b, a + b
 
         return a
