@@ -4,6 +4,7 @@ from coding_task.apis.views import (
     AckermannFunctionV1APIView,
     AckermannFunctionV2APIView,
     FactorialV1APIView,
+    FactorialV2APIView,
     FibonacciSequenceV1APIView,
     FibonacciSequenceV2APIView,
 )
@@ -27,6 +28,11 @@ factorial_urlpatterns = [
         "factorial/v1/<str:n>/",
         FactorialV1APIView.as_view(),
         name="factorial-v1",
+    ),
+    path(
+        "factorial/v2/<str:n>/",
+        FactorialV2APIView.as_view(),
+        name="factorial-v2",
     ),
 ]
 

@@ -23,6 +23,7 @@ class FactorialV1APIView(APIView):
     Version 1.
     Implementation is with Stirling's approximation https://en.wikipedia.org/wiki/Stirling%27s_approximation
     to be able to calculate the large numbers and in a fast manner.
+
     :param int n: term for which the api will calculate the factorial.
     :return int approximate_factorial: approximate result of calculating the factorial on n.
     """
@@ -45,3 +46,29 @@ class FactorialV1APIView(APIView):
         serializer.is_valid(raise_exception=True)
         result = self.stirling_approximation_factorial(serializer.validated_data["n"])
         return Response({"approximate_factorial": result}, status=status.HTTP_200_OK)
+
+
+class FactorialV2APIView(APIView):
+    """
+    API endpoint to calculate the factorial on n.
+    Version 2.
+    Under development, please use version 1.
+
+    :param int n: term for which the api will calculate the factorial.
+    :return int approximate_factorial: approximate result of calculating the factorial on n.
+    """
+
+    @swagger_auto_schema(
+        deprecated=True,
+        manual_parameters=[SWAGGER_DEF_N_INPUT_PARAM],
+        operation_summary="Factorial V2 API Endpoint [DISABLED]",
+        responses={
+            status.HTTP_503_SERVICE_UNAVAILABLE: "notice: Version 2 is still under development 💻 please use version 1."
+        },
+    )
+    def get(self, request, *args, **kwargs):
+
+        return Response(
+            {"notice": "Version 2 is still under development 💻 please use version 1."},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )

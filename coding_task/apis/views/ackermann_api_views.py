@@ -17,6 +17,7 @@ class AckermannFunctionV1APIView(APIView):
     """
     API endpoint to calculate the ackermann function given m and n.
     Version 1.
+
     :param int m: first param to calculate the ackermann function.
     :param int n: second param to calculate the ackermann function.
     :return int ackermann: the result of calculating the ackermann function for m and n.
@@ -85,6 +86,7 @@ class AckermannFunctionV2APIView(APIView):
     API endpoint to calculate the ackermann function given m and n.
     Version 2.
     Under development, please use version 1.
+
     :param int m: first param to calculate the ackermann function.
     :param int n: second param to calculate the ackermann function.
     :return int ackermann: the result of calculating the ackermann function for m and n.
