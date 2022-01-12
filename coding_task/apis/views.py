@@ -1,3 +1,5 @@
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +16,14 @@ class FibonacciSequenceV1APIView(APIView):
     :return int fibonacci_sequence: nth term of fibonacci sequence regarding the passed number.
     """
 
+    # Swagger configs
+    n_input_param = openapi.Parameter(
+        "n",
+        openapi.IN_PATH,
+        description="Number for which the fibonacci sequence will be calculated.",
+        type=openapi.TYPE_INTEGER,
+    )
+
     def fibonacci_sequence(self, n: int) -> int:
         a, b = 0, 1
 
@@ -22,6 +32,15 @@ class FibonacciSequenceV1APIView(APIView):
 
         return a
 
+    @swagger_auto_schema(
+        operation_summary="Fibonacci Sequence V1 API Endpoint",
+        manual_parameters=[n_input_param],
+        responses={
+            status.HTTP_200_OK: "fibonacci_sequence: result",
+            status.HTTP_400_BAD_REQUEST: "n: A valid integer is required.",
+            status.HTTP_500_INTERNAL_SERVER_ERROR: "error: Sorry, we're facing internal errors 🤯 please try again!",
+        },
+    )
     def get(self, request, *args, **kwargs):
         n = self.kwargs.get("n")
         serializer = NInputSerializer(data={"n": n})
@@ -49,11 +68,16 @@ class FibonacciSequenceV2APIView(APIView):
     :return int fibonacci_sequence: nth term of fibonacci sequence regarding the passed number.
     """
 
+    @swagger_auto_schema(
+        deprecated=True,
+        operation_summary="Fibonacci Sequence V2 API Endpoint [DISABLED]",
+        responses={
+            status.HTTP_503_SERVICE_UNAVAILABLE: "notice: Version 2 is still under development 💻 please use version 1."
+        },
+    )
     def get(self, request, *args, **kwargs):
 
         return Response(
-            {
-                "notice": "Version 2 is still under development 💻 please use version 1."
-            },
+            {"notice": "Version 2 is still under development 💻 please use version 1."},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
