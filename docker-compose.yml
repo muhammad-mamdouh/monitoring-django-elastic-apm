@@ -117,3 +117,21 @@ services:
       - elasticsearch
     networks:
       - task-network
+
+  docs:
+    image: coding_task_local_docs
+    container_name: docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./coding_task:/app/coding_task:z
+    ports:
+      - "8080:8080"
+    command: /start-docs
+    networks:
+      - task-network
